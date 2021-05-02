@@ -1,6 +1,6 @@
 module RejectionSampler
 
-export rejectionSampler
+export rejection_sampler
 
 function rejection_sampler(target_density, proposal_density, proposal_sampler,
                            scale, iterations, dimension)
