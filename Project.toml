@@ -1,0 +1,10 @@
+name = "MonteCarloZoo"
+uuid = "fbd2de72-4b79-4426-9bcb-215e0a982146"
+authors = ["Tim Hargreaves <hello@timhargreaves.com>"]
+version = "0.0.1"
+
+[deps]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[compat]
+julia = "1.6.0"
