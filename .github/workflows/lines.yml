@@ -1,17 +1,10 @@
 name: LoC
-on:
-  pull_request:
-    branches:
-      - master
-  push:
-    branches:
-      - master
-    tags: '*'
+on: [push]
 jobs:
   LoC:
     runs-on: ubuntu-latest
     steps:
-     - name: Make Code Badge
+      - name: Make Code Badge
         uses: shadowmoose/GHA-LoC-Badge@1.0.0
         id: badge
         with:
