@@ -1,4 +1,4 @@
-module RejectionSampler
+module MonteCarloZoo
 
 export rejection_sampler
 
@@ -11,7 +11,7 @@ function rejection_sampler(target_density, proposal_density, proposal_sampler,
         proposal = proposal_sampler()
         threshold = target_density(proposal) / (scale * proposal_density(proposal))
         if rand() < threshold
-            samples[:, i] = proposal
+            samples[:, i] .= proposal
             i += 1
         end
     end
