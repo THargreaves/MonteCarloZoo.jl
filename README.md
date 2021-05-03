@@ -2,4 +2,4 @@
 [![codecov.io](http://codecov.io/github/THargreaves/MonteCarloZoo.jl/coverage.svg?branch=master)](http://codecov.io/github/THargreaves/MonteCarloZoo.jl?branch=master)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://thargreaves.github.io/MonteCarloZoo.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://thargreaves.github.io/MonteCarloZoo.jl/dev)
-[![Lines of Code (Github Actions)](https://github.com/THargreaves/MonteCarloZoo.jl/workflows/lines/badge.svg)](https://github.com/THargreaves/MonteCarloZoo.jl/actions)
+[![Lines of Code (Github Actions)](https://raw.githubusercontent.com/THargreaves/MonteCarloZoo.jl/image-data/badge.svg)](https://github.com/THargreaves/MonteCarloZoo.jl/actions)
