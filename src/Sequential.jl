@@ -1,5 +1,6 @@
 export rejection_sampler
 export inverse_transform_sampler
+export box_muller_transform_sampler
 
 
 @doc raw"""
@@ -99,4 +100,41 @@ samples = inverse_transform_sampler(F_inv, N)
 """
 function inverse_transform_sampler(F_inv, N)
     return F_inv.(rand(1, N))
+end
+
+@doc raw"""
+    box_muller_transform_sampler(N)
+
+Perform Box-Muller transform sampling to generate standard Normal samples.
+
+The Box-Muller transform is a technique for generating independent, standard,
+normally distributed samples. It involves sampling from a polar coordinate
+system in which the angle of the sample is uniformly distrubition and the
+radius is distributed as ``\text{exp}(\tfrac{1}{2})`` (equivalent to
+``\chi^2_1``). It can then be shown that the cartesian coordinates of these
+samples have independent standard normal distributions.
+
+The full algorithm is given here:
+
+* Sample ``U_1, U_2 \stackrel{\text{i.i.d.}}}{\sim} \text{Unif}(0, 1)``
+* Compute ``Z_1 = \sqrt{-2 \log U_1}\cos(2\pi U_2)``, ``Z_2 = \sqrt{-2 \log U_1}\sin(2\pi U_2)``
+
+# Arguments
+* `N::Integer`: the number of samples to generate.
+
+# Examples
+```julia
+# 10 standard normal random variables
+samples = box_muller_transform_sampler(10)
+```
+"""
+function box_muller_transform_sampler(N)
+    M = N + N % 2
+    U1 = rand(1, M)
+    U2 = rand(1, M)
+    R = sqrt.(-2 * log.(U1))
+    θ = 2π * U2
+    Z1 = R .* cos.(θ)
+    Z2 = R .* sin.(θ)
+    return hcat(Z1, Z2)[:, 1:N]
 end

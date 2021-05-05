@@ -41,9 +41,21 @@ N = 1000
 Random.seed!(1729)
 samples = inverse_transform_sampler(F_inv, N)
 
-p = histogram(samples[1, :])
-savefig("out.png")
-
 @test size(samples) == (1, N)
 p = ks_test(samples, x -> 1 - exp(-x))
 @test p > 0.05
+
+## Box-Muller Transform Sampling
+
+function test_box_muller()
+    for N in (1000, 1001)
+        Random.seed!(1729)
+        samples = box_muller_transform_sampler(N)
+
+        @test size(samples) == (1, N)
+        p = ks_test(samples, x -> 1 / 2 * (1 + erf(x / sqrt(2))))
+        @test p > 0.05
+    end
+end
+
+test_box_muller()
