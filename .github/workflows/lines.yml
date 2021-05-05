@@ -12,7 +12,7 @@ jobs:
         id: badge
         with:
           debug: true
-          directory: src/
+          directory: './src/'
           badge: ./output/badge.svg
           patterns: '*.jl'
           ignore: ''
