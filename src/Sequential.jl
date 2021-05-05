@@ -68,3 +68,35 @@ function rejection_sampler(target_density, proposal_density, proposal_sampler,
 
     return samples
 end
+
+@doc raw"""
+    inverse_transform_sampler(F_inv, N)
+
+Perform inverse transform sampling using a supplied inverse CDF.
+
+Inverse transform sampling is based on the result that when
+``U \sim \text{Unif}(0, 1)``, X = ``F^{-1}``(U) will be distributed
+according to the CDF ``F``. For non-decreasing CDFs we can replace ``F^{-1}``
+with ``F``'s generalised inverse ``F^{-}(u) = \inf{x : F(x) > u} and use
+the same method.
+
+# Arguments
+* `F_inv::Function`: the inverse CDF of the target distrubition.
+* `N::Integer`: the number of samples to generate.
+
+# Notes
+* Because of the symmetry of a uniform random sample, one can replace ``1-u``
+  in the inverse CDF with ``u``.
+
+# Examples
+```julia
+# Sampling from an exponential distribution
+F_inv(u) = -log(u)  # using symmetry of U (see notes)
+N = 100
+
+samples = inverse_transform_sampler(F_inv, N)
+```
+"""
+function inverse_transform_sampler(F_inv, N)
+    return F_inv.(rand(1, N))
+end
