@@ -4,6 +4,7 @@
 [![Code coverage](http://codecov.io/github/THargreaves/MonteCarloZoo.jl/coverage.svg?branch=master)](http://codecov.io/github/THargreaves/MonteCarloZoo.jl?branch=master)
 [![Stable documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://thargreaves.github.io/MonteCarloZoo.jl/stable)
 [![Development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://thargreaves.github.io/MonteCarloZoo.jl/dev)
+[![Lines of code](https://raw.githubusercontent.com/THargreaves/MonteCarloZoo.jl/image-data/badge.svg)](https://github.com/THargreaves/MonteCarloZoo.jl/actions)
 
 # Monte Carlo Zoo
 
