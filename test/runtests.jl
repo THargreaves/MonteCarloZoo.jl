@@ -6,30 +6,27 @@ function ks_test(samples, target_cdf)
     for (i, (s, t)) in enumerate(zip(sorted_samples[:, 1:end - 1],
                                      sorted_samples[:, 1:end]))
         D = max(D,
-                abs(target_cdf(s) - i / iterations),
-                abs(target_cdf(t) - i / iterations))
+                abs(target_cdf(s) - i / length(samples)),
+                abs(target_cdf(t) - i / length(samples)))
     end
-    K = D * sqrt(iterations)
+    K = D * sqrt(length(samples))
     p = 1 - cdf(Kolmogorov(), K)
     return p
 end
 
 ## Rejection Sampling
 
-target_density(x) = exp(-(x^2 / 2)) / sqrt(2π)  # standard normal
-proposal_density(x) = 1 / (π * (1 + x^2))  # Cauchy
+f(x) = exp(-(x^2 / 2)) / sqrt(2π)  # standard normal
+g(x) = 1 / (π * (1 + x^2))  # Cauchy
 proposal_sampler() = tan(π * (rand() - 0.5))
-scale = sqrt(2π / ℯ)
-iterations = 1000
+M = sqrt(2π / ℯ)
+N = 1000
 dimension = 1
 
 Random.seed!(1729)
-samples = rejection_sampler(
-    target_density, proposal_density, proposal_sampler,
-    scale, iterations, dimension
-)
+samples = rejection_sampler(f, g, proposal_sampler, M, N, dimension)
 
-@test size(samples) == (dimension, iterations)
+@test size(samples) == (dimension, N)
 p = ks_test(samples, x -> 1 / 2 * (1 + erf(x / sqrt(2))))
 @test p > 0.05
 
