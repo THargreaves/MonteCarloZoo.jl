@@ -14,7 +14,7 @@ jobs:
           debug: true
           directory: ./
           badge: ./output/badge.svg
-          patterns: '*.jl'
+          patterns: 'src/*.jl'
           ignore: ''
 
       - name: Print the output
