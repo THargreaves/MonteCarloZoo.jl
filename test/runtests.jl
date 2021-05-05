@@ -1,4 +1,5 @@
-using Test, MonteCarloZoo, Distributions, Random, Plots, SpecialFunctions
+using Test, MonteCarloZoo, Random, Plots, SpecialFunctions
+import Distributions: Kolmogorov, cdf
 
 function ks_test(samples, target_cdf)
     sorted_samples = sort(samples, dims=2)
@@ -16,17 +17,17 @@ end
 
 ## Rejection Sampling
 
-f(x) = exp(-(x^2 / 2)) / sqrt(2π)  # standard normal
-g(x) = 1 / (π * (1 + x^2))  # Cauchy
-proposal_sampler() = tan(π * (rand() - 0.5))
+f(x) = exp(-x^2 / 2) / sqrt(2π)
+g(x) = 1 / (π * (1 + x^2))
+proposal_sampler = InverseTransformSampler(u -> tan(π * (u - 0.5)))
 M = sqrt(2π / ℯ)
 N = 1000
-dimension = 1
 
+s = RejectionSampler(f, g, proposal_sampler, M)
 Random.seed!(1729)
-samples = rejection_sampler(f, g, proposal_sampler, M, N, dimension)
+samples = sample(s, N)
 
-@test size(samples) == (dimension, N)
+@test size(samples) == (1, N)
 p = ks_test(samples, x -> 1 / 2 * (1 + erf(x / sqrt(2))))
 @test p > 0.05
 
@@ -35,8 +36,9 @@ p = ks_test(samples, x -> 1 / 2 * (1 + erf(x / sqrt(2))))
 F_inv(u) = -log(u)  # using symmetry of U (see notes)
 N = 1000
 
+s = InverseTransformSampler(F_inv)
 Random.seed!(1729)
-samples = inverse_transform_sampler(F_inv, N)
+samples = sample(s, N)
 
 @test size(samples) == (1, N)
 p = ks_test(samples, x -> 1 - exp(-x))
@@ -47,7 +49,8 @@ p = ks_test(samples, x -> 1 - exp(-x))
 function test_box_muller()
     for N in (1000, 1001)
         Random.seed!(1729)
-        samples = box_muller_transform_sampler(N)
+        s = BoxMullerTransformSampler()
+        samples = sample(s, N)
 
         @test size(samples) == (1, N)
         p = ks_test(samples, x -> 1 / 2 * (1 + erf(x / sqrt(2))))

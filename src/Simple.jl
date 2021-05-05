@@ -1,12 +1,11 @@
-export rejection_sampler
-export inverse_transform_sampler
-export box_muller_transform_sampler
-
+export RejectionSampler
+export InverseTransformSampler
+export BoxMullerTransformSampler
 
 @doc raw"""
-    rejection_sampler(f, g, proposal_sampler, M, N, dimension)
+    RejectionSampler(f, g, proposal_sampler, M)
 
-Perform rejection sampling using a supplied target and proposal distribution.
+A rejection sampler.
 
 Rejection sampling involves sampling from a target distribution ``f`` using a
 proposal distribution ``g`` which we are able to directly sample from. In order
@@ -27,38 +26,51 @@ generate independent samples from ``f``:
     proposal distribution.
 * `M::Real`: a scaling constant that bounds the ratio of the target and
     proposal density.
-* `N::Integer`: the number of samples to generate.
-* `dimension::Integer`: the expected dimension of each sample.
 
 # Notes
-* No checks are made to ensure that the scale constant is valid or that the 
+* No checks are made to ensure that the scale constant is valid or that the
   proposal sampler and density match. If these conditions are not met, the
   resulting samples will not be distributed according to the target density.
 * The expected acceptance rate for the sampler is the reciprocal of `M`.
 
 # Examples
 ```julia
-# Sampling from a standard normal distribution using Cauchy proposals
+# Generating 10 standard normal samples using a Cauchy proposal
 f(x) = exp(-x^2 / 2) / sqrt(2π)
-g(x) = (1 + x^2) / π 
-proposal_sampler() = tan(π * (rand() - 0.5))
+g(x) = 1 / (π * (1 + x^2))
+proposal_sampler = InverseTransformSampler(u -> tan(π * (u - 0.5)))
 M = sqrt(2π / ℯ)
-N = 100
-dimension = 1
-
-samples = rejection_sampler(
-    f, g, proposal_sampler,
-    M, N, dimension
-)
+s = RejectionSampler(f, g, proposal_sampler, M)
+samples = sample(s, 10)
 ```
 """
-function rejection_sampler(f, g, proposal_sampler, M, N, dimension)
-    samples = Array{Float64}(undef, dimension, N)
-    
+struct RejectionSampler <: Sampler
+    f::Function
+    g::Function
+    proposal_sampler::Sampler
+    M::Real
+end
+
+@doc raw"""
+    sample(s::RejectionSampler, N)
+
+Generate samples using a rejection sampler.
+
+# Arguments
+* `s::RejectionSampler`: a rejection sampler.
+* `N::Integer`: the number of samples to generate.
+
+# Returns
+* `samples::Array{Float64}`: a 2-D array in which each column is a sample.
+"""
+function sample(s::RejectionSampler, N::Integer)
+    # TODO: make this work for arbritary dimensions
+    samples = Array{Float64}(undef, 1, N)
     i = 1
     while i <= N
-        proposal = proposal_sampler()
-        threshold = f(proposal) / (M * g(proposal))
+        proposal = sample(s.proposal_sampler, 1)[1]
+
+        threshold = s.f(proposal) / (s.M * s.g(proposal))
         if rand() < threshold
             samples[:, i] .= proposal
             i += 1
@@ -69,9 +81,9 @@ function rejection_sampler(f, g, proposal_sampler, M, N, dimension)
 end
 
 @doc raw"""
-    inverse_transform_sampler(F_inv, N)
+    InverseTransformSampler(F_inv)
 
-Perform inverse transform sampling using a supplied inverse CDF.
+An inverse transform sampler.
 
 Inverse transform sampling is based on the result that when
 ``U \sim \text{Unif}(0, 1)``, ``X = F^{-1}(U)`` will be distributed
@@ -81,7 +93,6 @@ the same method.
 
 # Arguments
 * `F_inv::Function`: the inverse CDF of the target distrubition.
-* `N::Integer`: the number of samples to generate.
 
 # Notes
 * Because of the symmetry of a uniform random sample, one can replace ``1-u``
@@ -89,21 +100,36 @@ the same method.
 
 # Examples
 ```julia
-# Sampling from an exponential distribution
+# Generating 10 standard exponential random variables
 F_inv(u) = -log(u)  # using symmetry of U (see notes)
-N = 100
-
-samples = inverse_transform_sampler(F_inv, N)
+s = InverseTransformSampler(F_inv)
+samples = sample(s, 10)
 ```
 """
-function inverse_transform_sampler(F_inv, N)
-    return F_inv.(rand(1, N))
+struct InverseTransformSampler <: Sampler
+    F_inv::Function
 end
 
 @doc raw"""
-    box_muller_transform_sampler(N)
+    sample(s::InverseTransformSampler, N)
 
-Perform Box-Muller transform sampling to generate standard Normal samples.
+Generate samples using an inverse transform sampler.
+
+# Arguments
+* `s::InverseTransformSampler`: an inverse transform sampler.
+* `N::Integer`: the number of samples to generate.
+
+# Returns
+* `samples::Array{Float64}`: a 2-D array in which each column is a sample.
+"""
+function sample(s::InverseTransformSampler, N::Integer)
+    return s.F_inv.(rand(1, N))
+end
+
+@doc raw"""
+    BoxMullerTransformSampler()
+
+A Box-Muller transform sampler.
 
 The Box-Muller transform is a technique for generating independent, standard,
 normally distributed samples. It involves sampling from a polar coordinate
@@ -118,15 +144,31 @@ The full algorithm is given here:
 * Compute ``Z_1 = \sqrt{-2 \log U_1}\cos(2\pi U_2)``, ``Z_2 = \sqrt{-2 \log U_1}\sin(2\pi U_2)``
 
 # Arguments
-* `N::Integer`: the number of samples to generate.
+_None_
 
 # Examples
 ```julia
-# 10 standard normal random variables
-samples = box_muller_transform_sampler(10)
+# Generating 10 standard normal samples
+s = BoxMullerTransformSampler()
+samples = sample(s, 10)
 ```
 """
-function box_muller_transform_sampler(N)
+struct BoxMullerTransformSampler <: Sampler
+end
+
+@doc raw"""
+    sample(s::BoxMullerTransformSampler, N)
+
+Generate samples using a Box-Muller transform sampler.
+
+# Arguments
+* `s::BoxMullerTransformSampler`: a Box-Muller transform sampler.
+* `N::Integer`: the number of samples to generate.
+
+# Returns
+* `samples::Array{Float64}`: a 2-D array in which each column is a sample.
+"""
+function sample(s::BoxMullerTransformSampler, N::Integer)
     M = N + N % 2
     U1 = rand(1, M)
     U2 = rand(1, M)
