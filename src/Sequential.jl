@@ -116,7 +116,7 @@ samples have independent standard normal distributions.
 
 The full algorithm is given here:
 
-* Sample ``U_1, U_2 \stackrel{\text{i.i.d.}}}{\sim} \text{Unif}(0, 1)``
+* Sample ``U_1, U_2 \stackrel{\text{i.i.d.}}{\sim} \text{Unif}(0, 1)``
 * Compute ``Z_1 = \sqrt{-2 \log U_1}\cos(2\pi U_2)``, ``Z_2 = \sqrt{-2 \log U_1}\sin(2\pi U_2)``
 
 # Arguments
