@@ -75,9 +75,9 @@ end
 Perform inverse transform sampling using a supplied inverse CDF.
 
 Inverse transform sampling is based on the result that when
-``U \sim \text{Unif}(0, 1)``, X = ``F^{-1}``(U) will be distributed
+``U \sim \text{Unif}(0, 1)``, ``X = F^{-1}(U)`` will be distributed
 according to the CDF ``F``. For non-decreasing CDFs we can replace ``F^{-1}``
-with ``F``'s generalised inverse ``F^{-}(u) = \inf{x : F(x) > u} and use
+with ``F``'s generalised inverse ``F^{-}(u) = \inf{x : F(x) > u}`` and use
 the same method.
 
 # Arguments
