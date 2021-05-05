@@ -16,7 +16,7 @@ jobs:
           badge: ./output/badge.svg
           patterns: 'src/*.jl'
           ignore: ''
-          badge_color: "blueviolet"
+          badge_color: "orange"
 
       - name: Print the output
         run: |
