@@ -59,3 +59,18 @@ function test_box_muller()
 end
 
 test_box_muller()
+
+## Linear Congruential Generator
+
+a = 1664525
+c = 1013904223
+m = 2^32
+seed = 1729
+N = 10
+
+s = LinearCongruentialGenerator(a, c, m, seed)
+samples = sample(s, N)
+
+@test size(samples) == (1, N)
+p = ks_test(samples, x -> x * (0 ≤ x ≤ 1))
+@test p > 0.05
