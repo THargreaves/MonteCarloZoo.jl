@@ -10,6 +10,8 @@
 
 _A broad collection of Monte Carlo algorithms implemented in Julia._
 
+![Monte Carlo Zoo Logo](https://user-images.githubusercontent.com/38204689/117175169-7439b180-adc6-11eb-8e6f-f42e9782a981.png)
+
 This is a personal project that I am using to learn Julia whilst brushing up on my understanding of Monte Carlo methods.
 
 Contributions to improve the readability, efficiency, or robustness of my code are welcome but I would rather implement new features for myself.
