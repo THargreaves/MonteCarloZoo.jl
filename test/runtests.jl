@@ -74,3 +74,28 @@ samples = sample(s, N)
 @test size(samples) == (1, N)
 p = ks_test(samples, x -> x * (0 ≤ x ≤ 1))
 @test p > 0.05
+
+## Normal-Normal Transformer
+
+μ₁ = 1.0
+σ² = 2.0
+normal_sampler = BoxMullerTransformSampler()
+N = 1000
+
+t1 = NormalNormalTransformer(normal_sampler, (μ₁, σ²))
+Random.seed!(1729)
+samples = sample(t1, N)
+
+@test size(samples) == (1, N)
+p = ks_test(samples, x -> 1 / 2 * (1 + erf((x - μ₁) / sqrt(2 * σ²))))
+@test p > 0.05
+
+μ₂ = 2.0
+
+t2 = NormalNormalTransformer(t1, (μ₂, σ²), (μ₁, σ²))
+Random.seed!(1729)
+samples = sample(t2, N)
+
+@test size(samples) == (1, N)
+p = ks_test(samples, x -> 1 / 2 * (1 + erf((x - μ₂) / sqrt(2 * σ²))))
+@test p > 0.05
