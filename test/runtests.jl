@@ -66,7 +66,7 @@ a = 1664525
 c = 1013904223
 m = 2^32
 seed = 1729
-N = 10
+N = 1000
 
 s = LinearCongruentialGenerator(a, c, m, seed)
 samples = sample(s, N)
