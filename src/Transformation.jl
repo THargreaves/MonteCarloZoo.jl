@@ -40,7 +40,7 @@ struct NormalNormalTransformer <: Sampler
         old_params = (mu = old_params[1], sigma2 = old_params[2])
         # Validation
         if !(old_params[:sigma2] > 0 && new_params[:sigma2] > 0)
-            error("variance must be positive")
+            ArgumentError("variance must be positive")
         end
         new(normal_sampler, new_params, old_params)
     end
