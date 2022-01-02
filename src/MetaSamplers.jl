@@ -9,7 +9,7 @@ struct Sampler end
 struct GibbsSampler <: MetaSampler
     initial_value
     samplers::Tuple{Sampler}
-    x
+    x # state
     GibbsSampler(initial_value, samplers) = GibbsSampler(initial_value, samplers, initial_value)
 end
 

@@ -1,6 +1,8 @@
 name = "MonteCarloZoo"
 uuid = "fbd2de72-4b79-4426-9bcb-215e0a982146"
-authors = ["Tim Hargreaves <hello@timhargreaves.com>"]
+authors = ["Tim Hargreaves <hello@timhargreaves.com>",
+           "Jacobus Smit <jacobusmmsmit@gmail.com",
+           "Kasia Kobalczyk <something@somedomain.com"]
 version = "0.2.0"
 
 [deps]
